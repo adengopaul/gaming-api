@@ -10,13 +10,15 @@ getAllCountries = () => {
                 'Content-Type': 'application/json',
             },
         }).then(res => res.json())
-        .then(async (json) => {
+        .then((json) => {
             json.data.map(country => country['_id'] = country.id);
-            try {
-                await collection.insertMany(json.data);
-            } catch (error) {
-                console.log(error)
-            }   
+            json.data.forEach(async country => {
+                try {
+                    await collection.updateOne({id: country.id}, { $set: country}, {upsert: true});
+                } catch (error) {
+                    console.log(error)
+                }
+            }); 
         });
 
 } 

@@ -19,7 +19,7 @@ main = async () => {
         module.exports = client.db();
         require('../controllers/sportmonks/sportmonks');
     } catch (error) {
-        // console.log(error);
+        console.log(error);
         console.log("mongodb not connected");
     }
 }

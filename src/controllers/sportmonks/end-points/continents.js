@@ -10,13 +10,16 @@ getAllContinents = () => {
                 'Content-Type': 'application/json',
             },
         }).then(res => res.json())
-        .then(async (json) => {
-            json.data.map(continent => continent['_id'] = continent.id)
-            try {
-                await collection.insertMany(json.data);
-            } catch (error) {
-                console.log(error)
-            }   
+        .then((json) => {
+            json.data.map(continent => continent['_id'] = continent.id);
+
+            json.data.forEach(async continent => {
+                try {
+                    await collection.updateOne({id: continent.id}, { $set: continent}, {upsert: true});
+                } catch (error) {
+                    console.log(error)
+                }
+            });
         });
 
 } 

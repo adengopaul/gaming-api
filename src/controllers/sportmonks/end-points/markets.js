@@ -11,9 +11,16 @@ getAllMarkets = () => {
                 'Content-Type': 'application/json',
             },
         }).then(res => res.json())
-        .then(async (json) => {
-            // console.log(result)
-            const result = await collection.insertMany(json.data).catch(err => console.log(err));
+        .then((json) => {
+            console.log(json)
+            json.data.map(market => market['_id'] = market.id)
+            json.data.forEach(async market => {
+                try {
+                    await collection.updateOne({id: market.id}, { $set: market}, {upsert: true});
+                } catch (error) {
+                    console.log(error)
+                }
+            }); 
         });
 }
 
