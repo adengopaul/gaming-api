@@ -6,7 +6,6 @@ var dbName;
 // set variable NODE_ENV in heroku to production
 dbName = process.env.NODE_ENV === 'production'? 'gaming': 'gaming-test';
 // dbName = 'reportking';
-// dbURI = `mongodb+srv://adengo:${process.env.DB_PASS}@cluster0.kxm0wkf.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 dbURI =`mongodb+srv://adengo:EYgrWIEwt86upw9G@cluster0.6sfvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 const options = {
     useNewUrlParser: true,

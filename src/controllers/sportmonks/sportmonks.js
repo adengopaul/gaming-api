@@ -3,4 +3,4 @@
 // require('./end-points/leagues');
 // require('./end-points/fixtures');
 // require('./end-points/livescores');
-require('./end-points/markets');
+// require('./end-points/markets');

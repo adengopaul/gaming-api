@@ -6,6 +6,7 @@ var dbName;
 dbName = process.env.NODE_ENV === 'production'? 'gaming': 'gaming-test';
 
 dbURI = `mongodb+srv://adengo:EYgrWIEwt86upw9G@cluster0.6sfvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+
 const client = new MongoClient(dbURI, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
@@ -21,11 +22,11 @@ main = async () => {
     } catch (error) {
         console.log(error);
         console.log("mongodb not connected");
+    } finally {
+        await client.close();
     }
 }
-
 main();
-
 
 gracefulShutdown = async (msg, callback) => {
     await client.close();

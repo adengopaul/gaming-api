@@ -12,7 +12,7 @@ getAllMarkets = () => {
             },
         }).then(res => res.json())
         .then((json) => {
-            console.log(json)
+            // console.log(json)
             json.data.map(market => market['_id'] = market.id)
             json.data.forEach(async market => {
                 try {

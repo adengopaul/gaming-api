@@ -6,11 +6,15 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require("cors");
 
-require('./src/models/mongodb');
-// require('./src/controllers/betting-api');
+// require('./src/db/mongodb');
+require('./src/db/conn').connectToServer(function (err) {
+  if (err) {
+    console.error(err);
+    process.exit();
+  }});
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./src/routes/index');
+var usersRouter = require('./src/routes/users');
 
 var app = express();
 
@@ -27,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use(require('./src/routes/routes'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,3 +50,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
