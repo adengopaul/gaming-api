@@ -19,6 +19,7 @@ module.exports = {
       client.connect().then(function (client) {
         dbConnection = client.db();
         console.log("Successfully connected to MongoDB.");
+        require('../../src/controllers/sportmonks/sportmonks');
         return callback();
       }, (err) => {   
         return callback(err);

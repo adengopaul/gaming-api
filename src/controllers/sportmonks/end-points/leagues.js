@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const db = require('../../../models/mongodb'); 
+const db = require('../../../db/mongodb'); 
 const collection = db.collection('leagues');
 const url = (ID) => {
     return `https://soccer.sportmonks.com/api/v2.0/leagues/${ID}?api_token=${process.env.API_TOKEN}`;

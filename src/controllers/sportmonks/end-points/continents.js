@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const db = require('../../../models/mongodb'); 
+const db = require('../../../db/mongodb'); 
 const collection = db.collection('continents');
 const url = `https://soccer.sportmonks.com/api/v2.0/continents?api_token=${process.env.API_TOKEN}`;
 

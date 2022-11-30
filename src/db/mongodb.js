@@ -18,7 +18,7 @@ main = async () => {
         await client.connect();
         console.log('mongodb connected to atlas' /*+ dbURI*/);
         module.exports = client.db();
-        require('../controllers/sportmonks/sportmonks');
+        // require('../controllers/sportmonks/sportmonks');
     } catch (error) {
         console.log(error);
         console.log("mongodb not connected");
