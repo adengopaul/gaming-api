@@ -1,12 +1,12 @@
 const fetch = require('node-fetch');
-const db = require('../../../db/mongodb'); 
-const collection = db.collection('predictions');
+const dbo = require('../../../db/conn'); 
 
 const url = `https://soccer.sportmonks.com/api/v2.0/predictions/leagues?api_token=${process.env.API_TOKEN}`;
 const url2 = `https://soccer.sportmonks.com/api/v2.0/predictions/probabilities/next?api_token=${process.env.API_TOKEN}`;
 const url3 = `https://soccer.sportmonks.com/api/v2.0/predictions/valuebets/next?api_token=${process.env.API_TOKEN}`;
 
 getLeaguesAndPerformances = () => {
+    const collection = dbo.getDb().collection('predictions');
     fetch(url, {
             method: 'get',
             headers: { 
@@ -20,6 +20,7 @@ getLeaguesAndPerformances = () => {
 }
 
 getProbabilities = () => {
+    const collection = dbo.getDb().collection('predictions');
     fetch(url2, {
             method: 'get',
             headers: { 
@@ -33,6 +34,7 @@ getProbabilities = () => {
 }
 
 getValueBets = () => {
+    const collection = dbo.getDb().collection('predictions');
     fetch(url3, {
             method: 'get',
             headers: { 

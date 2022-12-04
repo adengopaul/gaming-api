@@ -18,7 +18,7 @@ fixtureRoutes.route('/fixtures').get( async (req, res) => {
         try {
             const teams = await Teams.find({_id: {$in: team_ids}})
                 .project({logo_path: 1, name: 1, short_code: 1}).toArray();
-                console.log(fixtures.length, teams.length)
+                console.log(fixtures.length, teams.length, team_ids.length)
             return res.status(200).json({teams, fixtures});
         } catch (error) {
             

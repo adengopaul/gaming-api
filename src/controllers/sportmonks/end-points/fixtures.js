@@ -1,10 +1,11 @@
 const fetch = require('node-fetch');
-const db = require('../../../db/mongodb'); 
-const collection = db.collection('fixtures');
+const dbo = require('../../../db/conn'); 
+
 const url = 'https://soccer.sportmonks.com/api/v2.0/fixtures';
 const leagues = /*'2, 5,2286, 8,24, 27, 564, 570, 82, 109, 384, 390, 301, 307,*/' 501, 513, 271, 1659,';
 
 getFixturesByDate = () => {
+    const collection = dbo.getDb().collection('fixtures');
     const now = Date.now();
     const then = now + (14*24*60*60*1000);
     const getDate = (timestamp) => {
@@ -44,6 +45,7 @@ getFixturesByDate = () => {
 getFixturesByDate();
 
 getLastUpdatedFixtures = () => {
+    const collection = dbo.getDb().collection('fixtures');
     fetch(`${url}/fixtures/updates?api_token=${process.env.API_TOKEN}`, {
             method: 'get',
             // body:    JSON.stringify(body),

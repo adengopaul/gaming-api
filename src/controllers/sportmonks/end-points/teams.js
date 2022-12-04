@@ -22,9 +22,10 @@ getTeamsBySeasonId = async () => {
                 }).then(res => res.json())
                 .then(async (json) => {
                     if(!json.data) return;
+                    console.log(json.data)
                     try {
-                        json.data.map(team => team['_id'] = team.id)
                         json.data.forEach(async team => {
+                            team['_id'] = team.id
                             try {
                                 await Teams.updateOne({id: team.id}, { $set: team}, {upsert: true});
                             } catch (error) {

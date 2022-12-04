@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
-const db = require('../../../db/mongodb'); 
-const collection = db.collection('markets');
+const dbo = require('../../../db/conn');  
 
 const url = `https://soccer.sportmonks.com/api/v2.0/markets?api_token=${process.env.API_TOKEN}`;
 
 getAllMarkets = () => {
+    const collection = dbo.getDb().collection('markets');
     fetch(url, {
             method: 'get',
             headers: { 

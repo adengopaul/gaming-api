@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
-const db = require('../../../db/mongodb'); 
-const collection = db.collection('leagues');
+const dbo = require('../../../db/conn');  
+
 const url = (ID) => {
     return `https://soccer.sportmonks.com/api/v2.0/leagues/${ID}?api_token=${process.env.API_TOKEN}`;
 }
@@ -17,6 +17,7 @@ const leagueIDs = [
 ];
 
 getLeaguesByID = () => {
+    const collection = dbo.getDb().collection('leagues');
     leagueIDs.forEach( async id => {
         try {
             fetch(url(id), {
