@@ -8,7 +8,7 @@ module.exports.bettor = (socket) => {
     socket.on('get_wagers', async(req) => {
     	try{
     		const wagers = await Wagers.aggregate([
-	        		{$sort: {total: 1}},
+	        		{$sort: {total: -1}},
 		            {$skip: req.skip},
 		            {$limit: req.size}
 	        	]).toArray();

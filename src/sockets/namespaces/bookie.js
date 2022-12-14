@@ -51,8 +51,8 @@ module.exports.bookie = (socket) => {
     });
 
     socket.on('save_wagers', async (wager) => {
-    	console.log(wager)
     	try{
+    		delete wager['_id'];
             await Wagers.updateOne({id: wager.id}, { $set: wager}, {upsert: true});   
     	} catch (error) {
 	        console.log(error)

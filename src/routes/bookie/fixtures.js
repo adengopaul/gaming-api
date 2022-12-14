@@ -1,6 +1,5 @@
 var express = require('express');
 var fixtureRoutes = express.Router();
-
 const dbo = require('../../db/conn'); 
 
 fixtureRoutes.route('/fixtures').get( async (req, res) => {
