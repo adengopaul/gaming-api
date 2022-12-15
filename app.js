@@ -13,9 +13,6 @@ require('./src/db/conn').connectToServer(function (err) {
     process.exit();
   }});
 
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
-
 var app = express();
 
 // view engine setup
@@ -29,8 +26,6 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use(require('./src/routes/routes'));
 
 // catch 404 and forward to error handler

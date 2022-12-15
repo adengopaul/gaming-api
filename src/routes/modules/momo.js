@@ -1,7 +1,7 @@
 var express = require('express');
 var momoRoutes = express.Router();
 const fetch = require('node-fetch');
-const dbo = require('../db/conn'); 
+const dbo = require('../../db/conn'); 
 
 momoRoutes.route('/apiuser').post((req, res) => {
     const url = `${process.env.MOMO_URL}/apiuser`;

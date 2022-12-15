@@ -11,7 +11,7 @@
       "docs/*"
     ],
     "delay": 2500,
-    "ext": "js,mjs,json,ejs"
+    "ext": "js,mjs,json,ejs,env"
   },
   "dependencies": {
     "africastalking": "^0.5.7",
