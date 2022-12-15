@@ -35,21 +35,18 @@ const sendValidationOTP = (action, user, res) => {
     }).publish(params).promise();
 
     publishTextPromise.then(async(data)=>{
-        // console.log("MessageID is " + data.MessageId);
         const OTP = dbo.getDb().collection('otps');
 
         try{
-            var result = await OTP.create({userId: user._id, otp});
+            var result = await OTP.insertOne({uuid: user.uuid, otp});
             if(result){
-                console.log(result);
                 res.status(200).json({
-                    status: "success",
                     message: "Token sent to phone!",
-                    userId: user._id
+                    uuid: user.uuid
                 });
             }
         } catch(error){
-            res.status(500).json(error);
+            return res.status(500).json(error);
         }  
     });
 }  
@@ -62,6 +59,8 @@ authRoutes.route('/signup').post(async(req, res) => {
             return res.status(500).json({ message: 'Account already exists.'});
         }
         req.body['uuid'] = generateUuid();
+        var saltHash = authFunctions.setPassword(req.body.password);
+        Object.assign(req.body, saltHash); 
         const newUser = await Users.insertOne(req.body);
         sendValidationOTP("Signup", req.body, res);
     } catch (error) {
@@ -78,11 +77,11 @@ authRoutes.route('/signin').post(async (req, res, next) => {
     }
 
     try {
-        var user = await Users.findOne({phone: phone});
+        var user = await Users.findOne({phone: phone}).catch(err => console.log(err));
         if (!user) {
             return res.status(404).json({message: "User account does not exist. Please signup."}); 
         }
-        var valid = authFunctions.validPassword(password);
+        var valid = authFunctions.validPassword(user.salt, user.hash, password);
         if (!valid) {
             return res.status(401).json({message: "Incorrect password. Please try again."}); 
         }
@@ -92,9 +91,12 @@ authRoutes.route('/signin').post(async (req, res, next) => {
             phone: user.phone
         });
     
-        res.status(200).json({ status: "success", token, user});
+        console.log(token)
+        user.salt = undefined;
+        user.hash = undefined;
+        res.status(200).json({token, user});
     } catch (error) {
-        (error)=> res.status(500).json(error);
+        res.status(500).json(error);
     }
     
   });
@@ -117,13 +119,13 @@ authRoutes.route('/forgot-password').post(async (req, res, next) => {
 authRoutes.route('/reset-password').post(async (req, res, next) => {
     const Users = dbo.getDb().collection('users');
     const { phone, password } = req.body;
-    if (!phonenumber && !password) {
+    if (!phone && !password) {
       return res.status(400).json({message: "Please provide email or phone number and password!"}); 
     }
 
     try {
         const user = await Users.findOne({ phone });
-        if (!user || !authFunctions.validPassword(password)) {
+        if (!user || !authFunctions.validPassword(user.salt, user.hash, password)) {
             return res.status(401).json({message: "Incorrect phone number or password"}); 
         }
         sendValidationOTP("Reset password", user, res);
@@ -134,30 +136,27 @@ authRoutes.route('/reset-password').post(async (req, res, next) => {
 
 authRoutes.route('/update-password').post(async (req, res, next) => {
     const Users = dbo.getDb().collection('users');
-
+    const {uuid, newPassword, phone} = req.body;
     try {
-        const user = await Users.findOne({_id: req.body.userId});
-        
-        var saltHash = authFunctions.setPassword(req.body.newPassword);
+        const user = await Users.findOne({uuid});
+        var saltHash = authFunctions.setPassword(newPassword);
 
         try {
-            
+            var result = await Users.updateOne({uuid}, saltHash );
+            if(result){
+                var token = authFunctions.generateJwt({uuid, phone});
+                user.hash = undefined;
+                user.salt = undefined;
+                res.status(200).json({ token, user});
+            } else{
+                res.status(500).json({
+                    message: 'Password not reset. Try again later.'
+                });
+            }
         } catch (error) {
             res.status(500).json(error);
         }
-        var result = await Users.updateOne({_id: req.body.userId}, saltHash );
-        if(result){
-            var token = authFunctions.generateJwt({uuid: user.uuid, phone: user.phone});
-            user.hash = undefined;
-            user.salt = undefined;
-            res.status(200).json({
-              token, user,
-            });
-          } else{
-            res.status(500).json({
-              message: 'Password not reset. Try again later.'
-            });
-          }
+        
     } catch (error) {
         (error)=> res.status(500).json(error)
     }
@@ -166,14 +165,14 @@ authRoutes.route('/update-password').post(async (req, res, next) => {
   authRoutes.route('/validate-otp').post(async (req, res, next) => {
     const Users = dbo.getDb().collection('users');
     const Otps = dbo.getDb().collection('otps');
-    const { otp, userId } = req.body;
+    const { otp, uuid } = req.body;
 
     try {
-        const isOTPExsist = await OTPModal.findOne({ otp, userId });
+        const isOTPExsist = await Otps.findOne({ otp, uuid });
         if (!isOTPExsist) {
             return res.status(400).json({message: "OTP doesnot exist or it's expired!"});  
         }
-        const user = await User.findById(isOTPExsist.userId);
+        const user = await Users.findOne({uuid});
         await Otps.deleteOne({ _id: isOTPExsist._id });
         var token = authFunctions.generateJwt({uuid: user.uuid, phone: user.phone});
 
@@ -185,7 +184,7 @@ authRoutes.route('/update-password').post(async (req, res, next) => {
         });
         
     } catch (error) {
-        res.status(500).json(error)
+        return res.status(500).json(error)
     }
   });
 
