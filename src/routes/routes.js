@@ -7,4 +7,6 @@ routes.use(require('./modules/auth'));
 
 routes.use(require('./modules/momo'));
 
+routes.use(require('./modules/recieveSMS'));
+
 module.exports = routes;
