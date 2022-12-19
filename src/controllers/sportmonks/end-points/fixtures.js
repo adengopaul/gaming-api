@@ -9,7 +9,7 @@ getFixturesByDate = () => {
     const now = Date.now();
     const then = now + (14*24*60*60*1000);
     const getDate = (timestamp) => {
-        return `${new Date(timestamp).getFullYear()}-${new Date(timestamp).getMonth()}-${new Date(timestamp).getDate()}`;
+        return `${new Date(timestamp).getFullYear()}-${new Date(timestamp).getMonth()+1}-${new Date(timestamp).getDate()}`;
     }
 
     // console.log(getDate(now), getDate(then));
@@ -38,7 +38,7 @@ getFixturesByDate = () => {
                     console.log(error)
                 }
             });
-        });
+        }).catch(err => console.error(err));;
 
 } 
 
