@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+var checkAuth = require('./check-auth');
 
 module.exports = {
     connectSocket: function (httpServer) {
@@ -8,7 +9,7 @@ module.exports = {
 			    // credentials: true
 			  }
         });
-        io.of('/bookie').on('connection', require('./namespaces/bookie').bookie);
-        io.of('/bettor').on('connection', require('./namespaces/bettor').bettor);
+        io.of('/bookie').use(checkAuth.auth).on('connection', require('./namespaces/bookie').bookie);
+        io.of('/bettor').use(checkAuth.auth).on('connection', require('./namespaces/bettor').bettor);
     }
 }

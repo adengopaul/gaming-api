@@ -1,6 +1,7 @@
 const dbo = require('../../db/conn'); 
 
 module.exports.bookie = (socket) => {
+	let user = socket.handshake.user;
     const Fixtures = dbo.getDb().collection('fixtures');
     const Teams = dbo.getDb().collection('teams');
     const Wagers = dbo.getDb().collection('wagers');
