@@ -20,7 +20,7 @@ module.exports = {
         dbConnection = client.db();
         console.log("Successfully connected to MongoDB.");
         require('./indexes');
-        require('../../src/controllers/sportmonks/sportmonks');
+        require('../../src/controllers/indexCtrl');
         return callback();
       }, (err) => {   
         return callback(err);
