@@ -21,10 +21,10 @@ createAPIUser = async () => {
             },
             body: JSON.stringify(body)
         });
-
+        
+        let json = await result.json();
         if(!result.ok) throw  result;
-        let json = result.json();
-        console.log(json)
+        // console.log(json)
     } catch(error){
         console.log(error);
     }
@@ -42,18 +42,18 @@ createAPIKey = async () => {
             }
         });
 
+        let json = await result.json();
         if(!result.ok) throw  result;
-        let json = result.json();
-        global.momoApiKey = json.apiKey;
-
-        createBearerToken();
+        
+        let momoApiKey = json.apiKey;
+        createBearerToken(momoApiKey);
     } catch (error) {
         console.log(error);
     }
 }
 
-createBearerToken = async () => {
-    let buf = new Buffer.from(`${process.env.X_Reference_Id}:${global.momoApiKey}`)
+createBearerToken = async (momoApiKey) => {
+    let buf = new Buffer.from(`${process.env.X_Reference_Id}:${momoApiKey}`)
     let momoBasicToken = buf.toString('base64');
     
     try{
@@ -67,9 +67,10 @@ createBearerToken = async () => {
             }
         });
 
+        let json = await result.json();
         if(!result.ok) throw  result;
-        let json = result.json();
         global.momoBearerToken = json.access_token;
+        // console.log({json});
     } catch(error){
         console.log(error);
     }
